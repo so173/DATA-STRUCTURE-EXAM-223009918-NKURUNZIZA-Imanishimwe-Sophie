@@ -1,1 +1,50 @@
+#include <iostream> // Including the input-output stream library
 
+using namespace std; // Using the standard namespace to avoid writing std:: before cout and cin
+q1. int main() // Main function where execution begins
+{
+    cout << "Hello, World"; // Printing "Hello World" to the console
+    return 0;               // Returning 0 to indicate successful program execution
+}
+#include <iostream> // Including the input-output stream library
+
+using namespace std; // Using the standard namespace to avoid writing std:: before cout and cin
+
+q2. int main() // Main function where execution begins
+{
+    // Declaring and initializing variables
+    int age = 20;          // Integer variable to store age
+    double price = 19.99;  // Double variable to store price (floating-point number)
+    char grade = 'A';      // Character variable to store a grade
+    string name = "Alice"; // String variable to store a name
+
+    // Outputting the values of variables
+    cout << "Name: " << name << endl;   // Printing name
+    cout << "Price: " << price << endl; // Printing price
+    cout << "Age: " << age << endl;     // Printing age
+    cout << "Grade: " << grade << endl; // Printing grade
+
+    return 0; // Returning 0 to indicate successful program execution
+}
+q3. #include <iostream>  // Including the input-output stream library for using cin and cout
+
+using namespace std;  // Using the standard namespace to avoid writing std:: before cout and cin
+
+int main()  // Main function where execution begins
+{
+    string name; // String variable to store the user's name
+    int age;     // Integer variable to store the user's age
+
+    // Asking the user for their name
+    cout << "Enter your name: ";
+    cin >> name;  // Reading the input name from the user
+
+    // Asking the user for their age
+    cout << "Enter your age: ";
+    cin >> age;   // Reading the input age from the user
+
+    // Displaying a personalized message with the user's name and age
+    cout << "Hello, " << name << "! You are " << age << " years old." << endl;
+
+    return 0;  // Returning 0 to indicate successful program execution
+}
