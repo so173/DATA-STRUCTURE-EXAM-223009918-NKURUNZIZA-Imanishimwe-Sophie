@@ -1,1 +1,152 @@
 # DATA-STRUCTURE-EXAM-223009918-NKURUNZIZA-Imanishimwe-Sophie
+
+Introduction
+Project called "Quiz Engine", It demonstrates key C++ concepts such as dynamic memory allocation, inheritance, polymorphism, and pointer arithmetic. It involves creating a dynamic array of quiz questions and implementing an abstract QuizUser class with derived classes PremiumQuizUser and GuestQuizUser, each handling quiz attempts differently.
+The system dynamically manages both questions and participants using pointers and includes functions to add or remove questions.
+Implementation and results
+• Define struct Question { char prompt[100]; char choices[4] [40]; int correctIdx; }; 
+allocate a dynamic Question* questions 
+Answer: struct Question {
+	char prompt[100];
+	char choices[4][40];
+	int correctIdx;
+};
+• Create an abstract class QuizUser with virtual int takeQuiz(Question*, int) = 0;, then 
+derive PremiumQuizUser : 
+Answer: class QuizUser {
+	public:
+		virtual int takeQuiz(Question* questions, int numQuestions) = 0;
+		virtual ~QuizUser() {}
+};
+QuizUser and GuestQuizUser : QuizUser to demonstrate inheritance and polymorphism 
+• Store QuizUser* in a dynamic QuizUser** participants; calling participants[i]
+>takeQuiz(questions, n) dispatches correctly. 
+Answer:
+class GuestQuizUser : public QuizUser {
+	public:
+		int takeQuiz(Question* questions, int numQuestions) override {
+			cout << "\n--- Guest Quiz ---\n";
+			int attempts = 0;
+			for (int i = 0; i < numQuestions && i < 3; ++i) {
+				cout << "Q" << (i + 1) << ": " << questions[i].prompt << endl;
+				for (int j = 0; j < 4; ++j) {
+					cout << j << ": " << questions[i].choices[j] << endl;
+				}
+				int ans;
+				cout << "Enter your answer (0-3): ";
+				cin >> ans;
+				attempts++;
+			}
+			cout << "Guest quiz completed. Score is hidden.\n";
+			return attempts;}
+};
+• Use pointer arithmetic to iterate over questions 
+• Implement addQuestion(Question) and removeQuestion(int index) by resizing 
+Overall code
+#include <iostream>
+#include <cstring>
+using namespace std;
+// Define the Question struct
+struct Question {
+	char prompt[100];
+	char choices[4][40];
+	int correctIdx;
+};
+// Abstract base class
+class QuizUser {
+	public:
+		virtual int takeQuiz(Question* questions, int numQuestions) = 0;
+		virtual ~QuizUser() {}
+};
+// GuestQuizUser: Only takes first 3 questions, no score shown
+class GuestQuizUser : public QuizUser {
+	public:
+		int takeQuiz(Question* questions, int numQuestions) override {
+			cout << "\n--- Guest Quiz ---\n";
+			int attempts = 0;
+			for (int i = 0; i < numQuestions && i < 3; ++i) {
+				cout << "Q" << (i + 1) << ": " << questions[i].prompt << endl;
+				for (int j = 0; j < 4; ++j) {
+					cout << j << ": " << questions[i].choices[j] << endl;
+				}
+				int ans;
+				cout << "Enter your answer (0-3): ";
+				cin >> ans;
+				attempts++;
+			}
+			cout << "Guest quiz completed. Score is hidden.\n";
+			return attempts;
+		}
+};
+// PremiumQuizUser: Full quiz, shows score
+class PremiumQuizUser : public QuizUser {
+	public:
+		int takeQuiz(Question* questions, int numQuestions) override {
+			cout << "\n--- Premium Quiz ---\n";
+			int score = 0;
+			for (int i = 0; i < numQuestions; ++i) {
+				cout << "Q" << (i + 1) << ": " << questions[i].prompt << endl;
+				for (int j = 0; j < 4; ++j) {
+					cout << j << ": " << questions[i].choices[j] << endl;
+				}
+				int ans;
+				cout << "Enter your answer (0-3): ";
+				cin >> ans;
+				if (ans == questions[i].correctIdx) {
+					score++;
+				}
+			}
+			cout << "Your score: " << score << "/" << numQuestions << "\n";
+			return score;
+		}
+};
+// Add question by resizing array
+void addQuestion(Question*& questions, int& n, const Question& q) {
+	Question* newArray = new Question[n + 1];
+	for (int i = 0; i < n; ++i) {
+		newArray[i] = questions[i];
+	}
+	newArray[n] = q;
+	delete[] questions;
+	questions = newArray;
+	n++;
+}
+// Remove question by index
+void removeQuestion(Question*& questions, int& n, int index) {
+	if (index < 0 || index >= n) return;
+	Question* newArray = new Question[n - 1];
+	for (int i = 0, j = 0; i < n; ++i) {
+		if (i != index) {
+			newArray[j++] = questions[i];
+		}
+	}delete[] questions;
+	questions = newArray;
+	n--;
+}
+int main() {
+	int numQuestions = 0;
+	Question* questions = nullptr;
+	// Sample questions
+	Question q1 = {"What is the capital of France?", {"Berlin", "London", "Paris", "Rome"}, 2};
+	Question q2 = {"2 + 2 equals?", {"3", "4", "5", "2"}, 1};
+	Question q3 = {"C++ is developed by?", {"Stroustrup", "Gates", "Jobs", "Musk"}, 0};
+	addQuestion(questions, numQuestions, q1);
+	addQuestion(questions, numQuestions, q2);
+	addQuestion(questions, numQuestions, q3);
+
+	// Participants array
+	int numParticipants = 2;
+	QuizUser** participants = new QuizUser*[numParticipants];
+	participants[0] = new GuestQuizUser();
+	participants[1] = new PremiumQuizUser();
+	for (int i = 0; i < numParticipants; ++i) {
+		participants[i]->takeQuiz(questions, numQuestions);
+	}
+	// Cleanup
+	for (int i = 0; i < numParticipants; ++i) {
+		delete participants[i];
+	}
+delete[] participants;
+	delete[] questions;
+	return 0;
+}
